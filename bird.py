@@ -1,10 +1,5 @@
 import pygame
 
-
-def restart():
-    return 0.5, 0, 50, 50
-
-
 # Constantes
 VELOCIDADE = 0.5
 GRAVIDADE = 0.001
@@ -22,13 +17,8 @@ velocidade_x, velocidade_y, x, y = 0.5, 0, 50, 50
 score = 0
 
 pygame.draw.circle(win, COR, (x, y), RAIO, 0)
-#pygame.draw.circle(win, AZUL, (50, 50), RAIO, 0)
+# pygame.draw.circle(win, AZUL, (50, 50), RAIO, 0)
 pygame.display.update()
-
-
-def restart():
-    pass
-
 
 while True:
 
@@ -56,8 +46,8 @@ while True:
     textsurface = font.render(str(score), False, AZUL)
     win.fill((0, 0, 0))
     pygame.draw.circle(win, COR, (int(x), int(y)), RAIO, 0)
-    win.blit(textsurface, (0,0))
-    #pygame.draw.circle(win, AZUL, (50, 50), RAIO, 0)
+    win.blit(textsurface, (0, 0))
+    # pygame.draw.circle(win, AZUL, (50, 50), RAIO, 0)
     pygame.display.update()
 
     for e in pygame.event.get():
