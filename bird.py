@@ -67,8 +67,16 @@ def printa_bird(win, bird):
 
 
 def render_score(font, bird):
+    """Retorna texto com a cor de bird"""
     return font.render(str(bird.score), False, bird.cor)
 
+
+def print_scores(textsurfaces, win):
+    """Recebe uma lista de scores e printa na tela"""
+    i = 0
+    for text in textsurfaces:
+        win.blit(text, (i, 0))
+        i += 50
 
 # Constantes
 VELOCIDADE = 0.5
@@ -79,36 +87,38 @@ AZUL = (0, 0, 255)
 LARGURA = 580
 ALTURA = 620
 
-pygame.init()
-win = pygame.display.set_mode((LARGURA, ALTURA), 0)
-font = pygame.font.SysFont("Comic Sans MS", 30)
 
-velocidade_x, velocidade_y, x, y = 0.5, 0, 50, 50
-bird_r = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_UP, VERMELHO, 0)
-bird_b = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, AZUL, 0)
-score = 0
+def main_menu():
+    pygame.init()
+
+    velocidade_x, velocidade_y, x, y = 0.5, 0, 50, 50
+    bird_r = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)
+    bird_b = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, 0.002, 10, LARGURA, ALTURA, pygame.K_UP, AZUL, 0)
+    birds = [bird_r, bird_b]
+    game(birds)
 
 
-while True:
+def game(birds):
 
-    # trata bird_r
-    bird_r.atualiza_dados()
-    bird_r.bate_parede()
-    bird_r.bate_teto_chao()
-    textsurface_r = render_score(font, bird_r)
+    win = pygame.display.set_mode((LARGURA, ALTURA), 0)
+    font = pygame.font.SysFont("Comic Sans MS", 30)
+    while True:
+        textsurfaces = []
+        for bird in birds:
+            bird.atualiza_dados()
+            bird.bate_parede()
+            bird.bate_teto_chao()
+            textsurfaces.append(render_score(font, bird))
+        # trata bird_r
+        win.fill((0, 0, 0))
+        for bird in birds:
+            printa_bird(win, bird)
+        print_scores(textsurfaces, win)
+        pygame.display.update()
 
-    # trata bird_b
-    bird_b.atualiza_dados()
-    bird_b.bate_parede()
-    bird_b.bate_teto_chao()
-    textsurface_b = render_score(font, bird_b)
-    win.fill((0, 0, 0))
-    printa_bird(win, bird_r)
-    printa_bird(win, bird_b)
-    win.blit(textsurface_r, (0, 0))
-    win.blit(textsurface_b, (50, 0))
-    pygame.display.update()
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit()
 
-    for e in pygame.event.get():
-        if e.type == pygame.QUIT:
-            exit()
+
+main_menu()
