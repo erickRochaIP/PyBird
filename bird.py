@@ -84,16 +84,53 @@ GRAVIDADE = 0.001
 RAIO = 5
 VERMELHO = (255, 0, 0)
 AZUL = (0, 0, 255)
+BRANCO = (255, 255, 255)
 LARGURA = 580
 ALTURA = 620
+
+
+def print_win(win, selected, options):
+    """Recebe opcoes de menu e printa uma tela com destaque na opcao selecionada"""
+    font = pygame.font.SysFont("Comic Sans MS", 30)
+    title = font.render("PyBird", False, BRANCO)
+    desc = font.render("Pressione espaço para iniciar", False, BRANCO)
+    rect = pygame.Rect(0, 100, 100, 25)
+    win.fill((0, 0, 0))
+    win.blit(title, (0, 0))
+    win.blit(desc, (0, 50))
+    pygame.draw.rect(win, AZUL, rect)
 
 
 def main_menu():
     pygame.init()
 
+    win = pygame.display.set_mode((LARGURA, ALTURA), 0)
     velocidade_x, velocidade_y, x, y = 0.5, 0, 50, 50
-    bird_r = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)
-    bird_b = Bird(50, 50, VELOCIDADE, 0, VELOCIDADE, 0.002, 10, LARGURA, ALTURA, pygame.K_UP, AZUL, 0)
+    options = [1, 2]
+    selected = 0
+    running = True
+    while running:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_UP]:
+            selected -= 1
+            if selected < 0:
+                selected = len(options) - 1
+        if keys[pygame.K_DOWN]:
+            selected += 1
+            if selected > len(options) - 1:
+                selected = 0
+        if keys[pygame.K_SPACE]:
+            running = False
+
+        print_win(win, selected, options)
+        pygame.display.update()
+
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit()
+
+    bird_r = Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)
+    bird_b = Bird(x, y, VELOCIDADE, 0, VELOCIDADE, 0.002, 10, LARGURA, ALTURA, pygame.K_UP, AZUL, 0)
     birds = [bird_r, bird_b]
     game(birds)
 
