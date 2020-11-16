@@ -94,44 +94,60 @@ def print_win(win, selected, options):
     font = pygame.font.SysFont("Comic Sans MS", 30)
     title = font.render("PyBird", False, BRANCO)
     desc = font.render("Pressione espaço para iniciar", False, BRANCO)
-    rect = pygame.Rect(0, 100, 100, 25)
+    rects = []
+    for i in range(len(options)):
+        rect = pygame.Rect(10, (i+1)*100, 125, 25)
+        if i == selected:
+            rect.width = 150
+        rects.append(rect)
+    texts = []
+    for option in options:
+        font_t = pygame.font.SysFont("Comic Sans MS", 15)
+        text_t = font_t.render(option, False, BRANCO)
+        texts.append(text_t)
     win.fill((0, 0, 0))
     win.blit(title, (0, 0))
     win.blit(desc, (0, 50))
-    pygame.draw.rect(win, AZUL, rect)
-
+    for rect in rects:
+        if rect.width == 150:
+            pygame.draw.rect(win, VERMELHO, rect)
+        else:
+            pygame.draw.rect(win, AZUL, rect)
+    for i in range(len(texts)):
+        win.blit(texts[i], (20, ((i+1)*100+3)))
 
 def main_menu():
     pygame.init()
-
     win = pygame.display.set_mode((LARGURA, ALTURA), 0)
     velocidade_x, velocidade_y, x, y = 0.5, 0, 50, 50
-    options = [1, 2]
+    options = ["Um jogador", "Dois jogadores"]
     selected = 0
     running = True
     while running:
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
-            selected -= 1
-            if selected < 0:
-                selected = len(options) - 1
-        if keys[pygame.K_DOWN]:
-            selected += 1
-            if selected > len(options) - 1:
-                selected = 0
-        if keys[pygame.K_SPACE]:
-            running = False
+        for e in pygame.event.get():
+            if e.type == pygame.QUIT:
+                exit()
+            if e.type == pygame.KEYDOWN:
+                if e.key == pygame.K_UP:
+                    selected -= 1
+                    if selected < 0:
+                        selected = len(options) - 1
+                if e.key == pygame.K_DOWN:
+                    selected += 1
+                    if selected > len(options) - 1:
+                        selected = 0
+                if e.key == pygame.K_SPACE:
+                    running = False
 
         print_win(win, selected, options)
         pygame.display.update()
 
-        for e in pygame.event.get():
-            if e.type == pygame.QUIT:
-                exit()
-
-    bird_r = Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)
-    bird_b = Bird(x, y, VELOCIDADE, 0, VELOCIDADE, 0.002, 10, LARGURA, ALTURA, pygame.K_UP, AZUL, 0)
-    birds = [bird_r, bird_b]
+    birds = []
+    if selected == 0:
+        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0))
+    elif selected == 1:
+        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_UP, AZUL, 0))
+        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0))
     game(birds)
 
 
