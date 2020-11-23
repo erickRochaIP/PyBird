@@ -71,7 +71,9 @@ class Menu:
 
 
 class Bird:
-    def __init__(self, x, y, velocidade_x, velocidade_y, velocidade, g, raio, larg, alt, tecla, cor, score):
+    def __init__(self, x, y, velocidade_x=VELOCIDADE, velocidade_y=0, velocidade=VELOCIDADE,
+                 g=GRAVIDADE, raio=RAIO, larg=LARGURA, alt=ALTURA, tecla=pygame.K_UP,
+                 cor=BRANCO, score=0):
         self.x = x
         self.y = y
         self.velocidade_x = velocidade_x
@@ -166,13 +168,13 @@ def main_menu():
         tela_menu.print_win()
         pygame.display.update()
 
-    birds = [Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)]
+    birds = [Bird(x, y, cor=VERMELHO, tecla=pygame.K_q)]
     if tela_menu.selected >= 1:
-        birds.append(Bird(x+10, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_e, AZUL, 0))
+        birds.append(Bird(x+10, y, cor=AZUL, tecla=pygame.K_w))
     if tela_menu.selected >= 2:
-        birds.append(Bird(x+20, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_r, BRANCO, 0))
+        birds.append(Bird(x+20, y, cor=BRANCO, tecla=pygame.K_e))
     if tela_menu.selected >= 3:
-        birds.append(Bird(x+30, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_t, AMARELO, 0))
+        birds.append(Bird(x+30, y, cor=AMARELO, tecla=pygame.K_r))
 
     game(birds)
 
