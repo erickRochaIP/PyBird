@@ -1,6 +1,39 @@
 import pygame
 
 
+# Constantes
+VELOCIDADE = 0.5
+GRAVIDADE = 0.001
+RAIO = 5
+VERMELHO = (255, 0, 0)
+AZUL = (0, 0, 255)
+AMARELO = (255, 255, 0)
+BRANCO = (255, 255, 255)
+LARGURA = 580
+ALTURA = 620
+
+
+class Option:
+    def __init__(self, text, x, y):
+        font_t = pygame.font.SysFont("Comic Sans MS", 15)
+        self.text = text
+        self.x = x
+        self.y = y
+        self.rect = pygame.Rect(x, y, 150, 25)
+        self.text_t = font_t.render(text, False, BRANCO)
+        self.cor = AZUL
+
+    def set_selected(self):
+        """Muda a opcao para ser selecionada"""
+        self.rect.width = 180
+        self.cor = VERMELHO
+
+    def print_option(self, win):
+        """Printa a opcao"""
+        pygame.draw.rect(win, self.cor, self.rect)
+        win.blit(self.text_t, (self.x+10, self.y+3))
+
+
 class Menu:
     def __init__(self, options, win):
         self.options = options
@@ -24,27 +57,17 @@ class Menu:
         font = pygame.font.SysFont("Comic Sans MS", 30)
         title = font.render("PyBird", False, BRANCO)
         desc = font.render("Pressione espaço para iniciar", False, BRANCO)
-        rects = []
+        options = []
         for i in range(len(self.options)):
-            rect = pygame.Rect(10, (i + 1) * 100, 125, 25)
+            option = Option(self.options[i], 10, (i + 1) * 100)
             if i == self.selected:
-                rect.width = 150
-            rects.append(rect)
-        texts = []
-        for option in self.options:
-            font_t = pygame.font.SysFont("Comic Sans MS", 15)
-            text_t = font_t.render(option, False, BRANCO)
-            texts.append(text_t)
+                option.set_selected()
+            options.append(option)
         self.win.fill((0, 0, 0))
         self.win.blit(title, (0, 0))
         self.win.blit(desc, (0, 50))
-        for rect in rects:
-            if rect.width == 150:
-                pygame.draw.rect(self.win, VERMELHO, rect)
-            else:
-                pygame.draw.rect(self.win, AZUL, rect)
-        for i in range(len(texts)):
-            self.win.blit(texts[i], (20, ((i + 1) * 100 + 3)))
+        for option in options:
+            option.print_option(self.win)
 
 
 class Bird:
@@ -125,17 +148,6 @@ def print_scores(textsurfaces, win):
         i += 50
 
 
-# Constantes
-VELOCIDADE = 0.5
-GRAVIDADE = 0.001
-RAIO = 5
-VERMELHO = (255, 0, 0)
-AZUL = (0, 0, 255)
-BRANCO = (255, 255, 255)
-LARGURA = 580
-ALTURA = 620
-
-
 def main_menu():
     pygame.init()
     win = pygame.display.set_mode((LARGURA, ALTURA), 0)
@@ -154,12 +166,14 @@ def main_menu():
         tela_menu.print_win()
         pygame.display.update()
 
-    birds = []
-    if tela_menu.selected == 0:
-        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0))
-    elif tela_menu.selected == 1:
-        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_UP, AZUL, 0))
-        birds.append(Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0))
+    birds = [Bird(x, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_w, VERMELHO, 0)]
+    if tela_menu.selected >= 1:
+        birds.append(Bird(x+10, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_e, AZUL, 0))
+    if tela_menu.selected >= 2:
+        birds.append(Bird(x+20, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_r, BRANCO, 0))
+    if tela_menu.selected >= 3:
+        birds.append(Bird(x+30, y, VELOCIDADE, 0, VELOCIDADE, GRAVIDADE, RAIO, LARGURA, ALTURA, pygame.K_t, AMARELO, 0))
+
     game(birds)
 
 
